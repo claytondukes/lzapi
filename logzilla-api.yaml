@@ -1,0 +1,3956 @@
+openapi: 3.0.3
+info:
+  title: LogZilla API
+  version: v6.31.1
+  description: LogZilla API schema
+paths:
+  /api/async-results/{id}:
+    get:
+      operationId: async_results_retrieve
+      summary: Retrieve results of asynchronous tasks
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: "\n                The id of the asynchronous operation (returned\
+          \ as the result\n                of the request that started the asynchronous\
+          \ operation)\n            "
+        required: true
+      tags:
+      - async-results
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CeleryTask'
+          description: ''
+  /api/auth/:
+    get:
+      operationId: auth_retrieve
+      description: "\n        If the user is authorized the user information will\
+        \ be available in the \"user\" key.         If not authorized then it will\
+        \ be a null value.\n        "
+      summary: Get user information for current session user
+      tags:
+      - auth
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthInfo'
+          description: ''
+    post:
+      operationId: auth_create
+      description: Handle the current login session.     Use this webmethod to login
+        and logout yourself (as the current user) or to get     the authenticated
+        session information.
+      summary: Authorize user with given credentials and create a login session
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthShort'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AuthShort'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AuthShort'
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      - {}
+      responses:
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+    delete:
+      operationId: auth_destroy
+      description: Handle the current login session.     Use this webmethod to login
+        and logout yourself (as the current user) or to get     the authenticated
+        session information.
+      tags:
+      - auth
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/authtokens:
+    get:
+      operationId: authtokens_list
+      summary: List active tokens
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: show_all
+        schema:
+          type: boolean
+          default: false
+        description: Do not filter objects owned by current user
+      tags:
+      - authtokens
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAuthTokenList'
+          description: ''
+    post:
+      operationId: authtokens_create
+      tags:
+      - authtokens
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+          description: ''
+  /api/authtokens/{secret_key}:
+    get:
+      operationId: authtokens_retrieve
+      parameters:
+      - in: path
+        name: secret_key
+        schema:
+          type: string
+        required: true
+      tags:
+      - authtokens
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+          description: ''
+    put:
+      operationId: authtokens_update
+      parameters:
+      - in: path
+        name: secret_key
+        schema:
+          type: string
+        required: true
+      tags:
+      - authtokens
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+          description: ''
+    patch:
+      operationId: authtokens_partial_update
+      parameters:
+      - in: path
+        name: secret_key
+        schema:
+          type: string
+        required: true
+      tags:
+      - authtokens
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAuthToken'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAuthToken'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAuthToken'
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+          description: ''
+    delete:
+      operationId: authtokens_destroy
+      parameters:
+      - in: path
+        name: secret_key
+        schema:
+          type: string
+        required: true
+      tags:
+      - authtokens
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '204':
+          description: No response body
+  /api/dashboards:
+    get:
+      operationId: dashboards_list
+      description: Always filtered by owner, unless you have permission for managing
+        dashboards AND set "show_all" parameter - then returns them all.
+      summary: List all dashboards
+      parameters:
+      - in: query
+        name: export
+        schema:
+          type: boolean
+          default: false
+        description: Return exportable fields only
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - in: query
+        name: owner
+        schema:
+          type: array
+          items:
+            type: integer
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: show_all
+        schema:
+          type: boolean
+          default: false
+        description: Do not filter objects owned by current user
+      - in: query
+        name: title
+        schema:
+          type: string
+      - in: query
+        name: title__iregex
+        schema:
+          type: string
+      tags:
+      - dashboards
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDashboardList'
+          description: ''
+    post:
+      operationId: dashboards_create
+      description: "\n        You can provide full data for the new dashboard,   \
+        \      or you can clone existing one with source_id parameter,         pointing\
+        \ to another dashboard. When cloning you can also         set \"clone_widgets\"\
+        \ to true to clone all widgets - otherwise         they will be just added\
+        \ to the dashboard without cloning         (often read_only).\n        "
+      summary: Create a new dashboard
+      parameters:
+      - in: query
+        name: clone_widgets
+        schema:
+          type: boolean
+        description: when cloning, clone widgets instead of adding read only
+      - in: query
+        name: source_id
+        schema:
+          type: integer
+        description: clone existing dashboard
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+        required: true
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+          description: ''
+  /api/dashboards/{id}:
+    get:
+      operationId: dashboards_retrieve
+      summary: Get details for specified dashboard
+      parameters:
+      - in: query
+        name: export
+        schema:
+          type: boolean
+        description: Return exportable fields only
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      tags:
+      - dashboards
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+          description: ''
+    put:
+      operationId: dashboards_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+        required: true
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+          description: ''
+    patch:
+      operationId: dashboards_partial_update
+      summary: Update specific settings for given dashboard
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDashboard'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDashboard'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDashboard'
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+          description: ''
+    delete:
+      operationId: dashboards_destroy
+      summary: Delete specified dashboard
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      tags:
+      - dashboards
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '204':
+          description: No response body
+  /api/dashboards/{id}/templates:
+    post:
+      operationId: dashboards_templates_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DashboardTemplatePath'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DashboardTemplatePath'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DashboardTemplatePath'
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardTemplatePath'
+          description: ''
+  /api/dashboards/{id}/widgets:
+    post:
+      operationId: dashboards_widgets_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      tags:
+      - dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Widget'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Widget'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Widget'
+        required: true
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Widget'
+          description: ''
+  /api/dashboards/{id}/widgets/:
+    delete:
+      operationId: dashboards_widgets_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dashboard.
+        required: true
+      tags:
+      - dashboards
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '204':
+          description: No response body
+  /api/dictionaries:
+    get:
+      operationId: dictionaries_list
+      summary: List all available dictionaries with their types
+      parameters:
+      - in: query
+        name: no_cache
+        schema:
+          type: boolean
+        description: Do not use cache for dictionary types
+      tags:
+      - dictionaries
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dictionary'
+          description: ''
+  /api/dictionaries/{name}:
+    get:
+      operationId: dictionaries_retrieve
+      description: If dictionary is static, then all values will be returned; if it
+        is dynamic, then no more than 'limit' will be returned from the ones matching
+        'pattern'.
+      summary: Get details of particular dictionary by dictionary name
+      parameters:
+      - in: query
+        name: last_seen_from
+        schema:
+          type: string
+        description: 'Show only last seen newer than given time. Time format: epoch
+          [s] or negative number with unit [h (hours), d (days)] can be provided to
+          get time relative to current.'
+      - in: query
+        name: last_seen_to
+        schema:
+          type: string
+        description: 'Show only last seen older than given time.Time format: epoch
+          [s] or negative number with unit[h (hours), d (days)]can be provided to
+          get time relative to current.'
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          default: 20
+        description: Limit items to given number (dynamic dictionaries only)
+      - in: path
+        name: name
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_\s]+$
+        required: true
+      - in: query
+        name: no_cache
+        schema:
+          type: boolean
+        description: Do not use cache for dictionary types
+      - in: query
+        name: pattern
+        schema:
+          type: string
+        description: Filter by substring (dynamic dictionaries only)
+      - in: query
+        name: show_last_seen
+        schema:
+          type: boolean
+          default: false
+        description: Show last seen time (1h resolution).
+      tags:
+      - dictionaries
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dictionary'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+  /api/events/{id}:
+    get:
+      operationId: events_retrieve
+      summary: Retrieve particular event by id
+      parameters:
+      - in: query
+        name: actions_hint
+        schema:
+          type: boolean
+          default: true
+        description: Apply action by field
+      - in: query
+        name: detailed
+        schema:
+          type: boolean
+          default: true
+        description: Show events with details
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      tags:
+      - events
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: events_partial_update
+      summary: Change status (numeric) of specified event
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      tags:
+      - events
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          description: No response body
+  /api/events/{id}/timestamps:
+    get:
+      operationId: events_timestamps_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      tags:
+      - events
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          description: No response body
+  /api/events/{id}/triggers:
+    get:
+      operationId: events_triggers_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+        required: true
+      tags:
+      - events
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          description: No response body
+  /api/license-info:
+    get:
+      operationId: license_info_list
+      summary: Show current LogZilla installation license information
+      parameters:
+      - in: query
+        name: raw_json
+        schema:
+          type: boolean
+          default: false
+        description: download raw license
+      - in: query
+        name: with_counters
+        schema:
+          type: boolean
+          default: true
+        description: check EPD limit
+      tags:
+      - license-info
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/License'
+          description: ''
+  /api/performance-tests/dashboard:
+    post:
+      operationId: performance_tests_dashboard_create
+      summary: Get dashboard performance test results
+      tags:
+      - performance-tests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CeleryTask'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CeleryTask'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CeleryTask'
+        required: true
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CeleryTask'
+          description: ''
+  /api/performance-tests/estimate:
+    post:
+      operationId: performance_tests_estimate_create
+      summary: Performance estimator results
+      tags:
+      - performance-tests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CeleryTask'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CeleryTask'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CeleryTask'
+        required: true
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CeleryTask'
+          description: ''
+  /api/performance-tests/parser-rules:
+    post:
+      operationId: performance_tests_parser_rules_create
+      summary: Get parser rules performance test results
+      tags:
+      - performance-tests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParserRulesPerfTestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ParserRulesPerfTestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ParserRulesPerfTestRequest'
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CeleryTask'
+          description: ''
+  /api/performance-tests/storage:
+    post:
+      operationId: performance_tests_storage_create
+      summary: Get storage performance test results
+      tags:
+      - performance-tests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StoragePerfTestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/StoragePerfTestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/StoragePerfTestRequest'
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CeleryTask'
+          description: ''
+  /api/query:
+    post:
+      operationId: query_create
+      summary: Create and execute a new query, returning results if immediately available
+      parameters:
+      - in: query
+        name: offset
+        schema:
+          type: integer
+        description: Pagination offset, supported only for search query
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: supported only for search query
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: Number of results per page
+      - in: query
+        name: sphinx_validation
+        schema:
+          type: boolean
+          default: true
+        description: Return a 400 with errors if query is invalid
+      - in: query
+        name: timeout
+        schema:
+          type: integer
+        description: Wait for results
+      tags:
+      - query
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Query'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Query'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Query'
+        required: true
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Query'
+          description: ''
+  /api/query-types:
+    get:
+      operationId: query_types_list
+      summary: List available query types
+      tags:
+      - query-types
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QueryTypeList'
+          description: ''
+  /api/query-types/{name}:
+    get:
+      operationId: query_types_retrieve
+      summary: Show details of given query type
+      parameters:
+      - in: path
+        name: name
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_]+$
+        required: true
+      tags:
+      - query-types
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryType'
+          description: ''
+  /api/query/{qid}:
+    get:
+      operationId: query_retrieve
+      description: "\n        Another page can be requested (except the first one)\
+        \         with \"page\" query parameter         (this makes sense only for\
+        \ search query, other types don't support         paging).\n        "
+      summary: Get results for existing query
+      parameters:
+      - in: query
+        name: add_geoip_data
+        schema:
+          type: boolean
+          default: false
+        description: Include GeoIP data in results
+      - in: query
+        name: offset
+        schema:
+          type: integer
+        description: Pagination offset, supported only for search query
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: supported only for search query
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: Number of results per page
+      - in: path
+        name: qid
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_]+$
+        required: true
+      tags:
+      - query
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Query'
+          description: ''
+  /api/query/{qid}/export:
+    get:
+      operationId: query_export_retrieve
+      summary: Return query results as report in specified file format
+      parameters:
+      - in: query
+        name: ftype
+        schema:
+          type: string
+          default: json
+        description: one of 'csv', 'xslx', 'docx', 'pdf' or 'json' (default), but
+          not every query type supports all formats
+      - in: path
+        name: qid
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_]+$
+        required: true
+      - in: query
+        name: timezone
+        schema:
+          type: string
+        description: Timezone name for query time ranges
+      tags:
+      - query
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+  /api/query/{qid}/recalculate:
+    get:
+      operationId: query_recalculate_retrieve
+      parameters:
+      - in: path
+        name: qid
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_]+$
+        required: true
+      tags:
+      - query
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Query'
+          description: ''
+  /api/query/{qid}/remove:
+    get:
+      operationId: query_remove_retrieve
+      parameters:
+      - in: path
+        name: qid
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_]+$
+        required: true
+      tags:
+      - query
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Query'
+          description: ''
+  /api/query/{qid}/stop:
+    get:
+      operationId: query_stop_retrieve
+      parameters:
+      - in: path
+        name: qid
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_]+$
+        required: true
+      tags:
+      - query
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Query'
+          description: ''
+    post:
+      operationId: query_stop_create
+      parameters:
+      - in: path
+        name: qid
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_]+$
+        required: true
+      tags:
+      - query
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Query'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Query'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Query'
+        required: true
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Query'
+          description: ''
+  /api/reports:
+    get:
+      operationId: reports_list
+      summary: List available generated reports
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - reports
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedShortReportList'
+          description: ''
+  /api/reports/{id}:
+    get:
+      operationId: reports_retrieve
+      summary: Get metadata for given report
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this report.
+        required: true
+      tags:
+      - reports
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShortReport'
+          description: ''
+    delete:
+      operationId: reports_destroy
+      summary: Remove generated report
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this report.
+        required: true
+      tags:
+      - reports
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '204':
+          description: No response body
+  /api/reports/{id}/file:
+    get:
+      operationId: reports_file_retrieve
+      summary: Retrieve report contents as file
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this report.
+        required: true
+      - in: query
+        name: saveas
+        schema:
+          type: string
+        description: destination name of file to save
+      tags:
+      - reports
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShortReport'
+          description: ''
+  /api/tasks:
+    get:
+      operationId: tasks_list
+      description: You can filter tasks using parameters specified below. For any
+        filter field that can get multiple options, you can specify them using comma-separated
+        string (this will return all tasks belonging to user 1 OR user 2)
+      summary: List tasks
+      parameters:
+      - in: query
+        name: assigned_to
+        schema:
+          type: string
+        description: Filter by assigned to.
+      - in: query
+        name: is_open
+        schema:
+          type: boolean
+        description: Filter opened tasks
+      - in: query
+        name: is_overdue
+        schema:
+          type: boolean
+        description: Filter overdue tasks
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - in: query
+        name: owner
+        schema:
+          type: array
+          items:
+            type: integer
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: title
+        schema:
+          type: string
+        description: Filter by name.
+      - in: query
+        name: unassigned
+        schema:
+          type: boolean
+        description: Filter unassigned tasks
+      tags:
+      - tasks
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTaskList'
+          description: ''
+    post:
+      operationId: tasks_create
+      summary: Create a new task
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Task'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Task'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Task'
+        required: true
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: ''
+  /api/tasks/{id}:
+    get:
+      operationId: tasks_retrieve
+      summary: Get details for specified task
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this task.
+        required: true
+      tags:
+      - tasks
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: ''
+    put:
+      operationId: tasks_update
+      summary: Replace specified task
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this task.
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Task'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Task'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Task'
+        required: true
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: ''
+    patch:
+      operationId: tasks_partial_update
+      summary: Update specified task settings
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this task.
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTask'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTask'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTask'
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: ''
+    delete:
+      operationId: tasks_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this task.
+        required: true
+      tags:
+      - tasks
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '204':
+          description: No response body
+  /api/triggers:
+    get:
+      operationId: triggers_list
+      description: "\n        You can filter triggers using parameters specified below.\
+        \ For         any filter field that can get multpiple options, you can   \
+        \      specify them using comma-separated string, or with standard       \
+        \  query string mechanism - repeating given field, like in         \"/tasks?owner=1&owner=2\"\
+        \ (this will return all tasks belonging         to user 1 OR user 2)\n   \
+        \     "
+      summary: List event triggers
+      parameters:
+      - in: query
+        name: actions
+        schema:
+          type: string
+        description: Filter by action
+      - in: query
+        name: created_at__gte
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: created_at__lte
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: export
+        schema:
+          type: boolean
+          default: false
+        description: Return exportable fields only
+      - in: query
+        name: name
+        schema:
+          type: string
+      - in: query
+        name: name__iregex
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - in: query
+        name: owner
+        schema:
+          type: array
+          items:
+            type: integer
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: preset_name
+        schema:
+          type: string
+      - in: query
+        name: preset_name__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: script_path
+        schema:
+          type: string
+        description: Filter by script path
+      - in: query
+        name: show_all
+        schema:
+          type: boolean
+          default: false
+        description: Include internal triggers
+      tags:
+      - triggers
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTriggerList'
+          description: ''
+    post:
+      operationId: triggers_create
+      summary: Create a new trigger
+      parameters:
+      - in: query
+        name: reload_timeout
+        schema:
+          type: integer
+          default: 0
+        description: Number of seconds to wait for response
+      tags:
+      - triggers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Trigger'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Trigger'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Trigger'
+        required: true
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trigger'
+          description: ''
+  /api/triggers/{id}:
+    get:
+      operationId: triggers_retrieve
+      summary: Get details for specified trigger
+      parameters:
+      - in: query
+        name: export
+        schema:
+          type: boolean
+        description: Return exportable fields only
+      - in: path
+        name: id
+        schema:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        required: true
+      tags:
+      - triggers
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trigger'
+          description: ''
+    put:
+      operationId: triggers_update
+      summary: Any change in trigger creates new trigger snapshot
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        required: true
+      - in: query
+        name: reload_timeout
+        schema:
+          type: integer
+          default: 0
+        description: Number of seconds to wait for response
+      tags:
+      - triggers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Trigger'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Trigger'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Trigger'
+        required: true
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trigger'
+          description: ''
+    patch:
+      operationId: triggers_partial_update
+      summary: Update specific settings for trigger
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        required: true
+      tags:
+      - triggers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTrigger'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTrigger'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTrigger'
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trigger'
+          description: ''
+    delete:
+      operationId: triggers_destroy
+      summary: Delete specified trigger
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        required: true
+      - in: query
+        name: reload_timeout
+        schema:
+          type: integer
+          default: 0
+        description: Number of seconds to wait for response
+      tags:
+      - triggers
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '204':
+          description: No response body
+  /api/triggers/{id}/history:
+    get:
+      operationId: triggers_history_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        required: true
+      tags:
+      - triggers
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trigger'
+          description: ''
+  /api/widget-presets:
+    get:
+      operationId: widget_presets_list
+      summary: List widget presets
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - widget-presets
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWidgetPresetList'
+          description: ''
+  /api/widget-presets/{id}:
+    get:
+      operationId: widget_presets_retrieve
+      summary: Get details for specified widget preset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_]+$
+        required: true
+      tags:
+      - widget-presets
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetPreset'
+          description: ''
+  /api/widget-types:
+    get:
+      operationId: widget_types_list
+      summary: List widget types
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - widget-types
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWidgetTypeInfoList'
+          description: ''
+  /api/widget-types/{id}:
+    get:
+      operationId: widget_types_retrieve
+      summary: Get details for specified widget type
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_]+$
+        required: true
+      tags:
+      - widget-types
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetTypeInfo'
+          description: ''
+  /api/widgets:
+    get:
+      operationId: widgets_list
+      description: "\n        List is always filtered by owner, unless you have  \
+        \       permission for managing widgets AND set \"show_all\"         parameter\
+        \ - then you'll see all widgets.\n        "
+      summary: List all widgets
+      parameters:
+      - in: query
+        name: export
+        schema:
+          type: boolean
+          default: false
+        description: Return exportable fields only
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: show_all
+        schema:
+          type: boolean
+          default: false
+        description: Do not filter objects owned by current user
+      - in: query
+        name: title
+        schema:
+          type: string
+      tags:
+      - widgets
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWidgetList'
+          description: ''
+  /api/widgets/{id}:
+    get:
+      operationId: widgets_retrieve
+      summary: Get details for specified widget id
+      parameters:
+      - in: query
+        name: export
+        schema:
+          type: boolean
+          default: false
+        description: Return exportable fields only
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this widget.
+        required: true
+      tags:
+      - widgets
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Widget'
+          description: ''
+    put:
+      operationId: widgets_update
+      summary: Replace specified widget
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this widget.
+        required: true
+      tags:
+      - widgets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Widget'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Widget'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Widget'
+        required: true
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Widget'
+          description: ''
+    patch:
+      operationId: widgets_partial_update
+      summary: Update widget specific settings
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this widget.
+        required: true
+      tags:
+      - widgets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedWidget'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedWidget'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedWidget'
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Widget'
+          description: ''
+    delete:
+      operationId: widgets_destroy
+      summary: Delete specified widget
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this widget.
+        required: true
+      tags:
+      - widgets
+      security:
+      - TokenAuthentication: []
+      - LZInternalAuthentication: []
+      - cookieAuth: []
+      - LZAutoLoginAuthentication: []
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    AuthInfo:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        permissions:
+          type: array
+          items:
+            type: string
+          readOnly: true
+          description: Use the API method GET "permissions" to get a list of the available
+            permissions (codewords)
+        is_admin:
+          type: boolean
+          readOnly: true
+      required:
+      - is_admin
+      - permissions
+      - user
+    AuthShort:
+      type: object
+      properties:
+        username:
+          type: string
+          default: username
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        password:
+          type: string
+          writeOnly: true
+    AuthToken:
+      type: object
+      properties:
+        user:
+          allOf:
+          - $ref: '#/components/schemas/ShortUser'
+          readOnly: true
+          description: User
+        secret_key:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Date-time of creation
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Date-time of update
+      required:
+      - created_at
+      - secret_key
+      - updated_at
+      - user
+    CeleryTask:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Detail
+        task_id:
+          type: string
+          description: Task id
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: |-
+            status
+
+            * `STARTED` - STARTED
+            * `RECEIVED` - RECEIVED
+            * `REVOKED` - REVOKED
+            * `RETRY` - RETRY
+            * `PENDING` - PENDING
+            * `FAILURE` - FAILURE
+            * `SUCCESS` - SUCCESS
+            * `IN_PROGRESS` - IN_PROGRESS
+        results:
+          type: object
+          additionalProperties: {}
+          description: Result
+        exception:
+          type: string
+          description: Exception
+      required:
+      - detail
+      - exception
+      - results
+      - status
+      - task_id
+    Dashboard:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        owner:
+          allOf:
+          - $ref: '#/components/schemas/ShortUser'
+          readOnly: true
+        is_public:
+          type: boolean
+        read_only:
+          type: boolean
+          readOnly: true
+        config:
+          $ref: '#/components/schemas/DashboardConfig'
+        widgets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Widget'
+        description:
+          type: string
+          nullable: true
+        application_code:
+          type: string
+          readOnly: true
+          description: Application code
+      required:
+      - application_code
+      - config
+      - id
+      - owner
+      - read_only
+    DashboardConfig:
+      type: object
+      properties:
+        title:
+          type: string
+        style_class:
+          allOf:
+          - $ref: '#/components/schemas/StyleClassEnum'
+          description: |-
+            Display type
+
+            * `default` - default
+            * `infographic` - infographic
+            * `moonlight` - moonlight
+            * `vintage` - vintage
+            * `roma` - roma
+            * `macarons` - macarons
+            * `shine` - shine
+        time_range:
+          allOf:
+          - $ref: '#/components/schemas/TimeRange'
+          default:
+            preset: last_1_hours
+        timezone:
+          type: string
+          description: Time Zone
+        filter:
+          type: array
+          items:
+            $ref: '#/components/schemas/Filter'
+      required:
+      - title
+    DashboardTemplatePath:
+      type: object
+      properties:
+        path:
+          type: string
+          readOnly: true
+          description: 'Path to dashboard template path '
+      required:
+      - path
+    Detail:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Detailed (varying) descriptive text
+      required:
+      - detail
+    Dictionary:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/TypeEnum'
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/DictionaryItem'
+      required:
+      - list
+      - type
+    DictionaryItem:
+      type: object
+      properties:
+        name:
+          type: string
+        id:
+          type: integer
+        value:
+          type: object
+          additionalProperties: {}
+        last_seen:
+          type: integer
+      required:
+      - name
+    FileTypeEnum:
+      enum:
+      - csv
+      - xls
+      - htmldoc
+      - pdf
+      - docx
+      - xlsx
+      - json
+      type: string
+      description: |-
+        * `csv` - csv
+        * `xls` - xls
+        * `htmldoc` - htmldoc
+        * `pdf` - pdf
+        * `docx` - docx
+        * `xlsx` - xlsx
+        * `json` - json
+    Filter:
+      type: object
+      properties:
+        op:
+          $ref: '#/components/schemas/FilterOpEnum'
+        value:
+          type: object
+          additionalProperties: {}
+        field:
+          type: string
+          description: Field from the event for comparison (see Detailed API Method
+            Documentation)
+        ignore_case:
+          type: boolean
+      required:
+      - field
+      - value
+    FilterCppModel:
+      properties:
+        field:
+          title: Field
+          type: string
+        op:
+          allOf:
+          - $ref: '#/components/schemas/FilterCppModelOpEnum'
+          default: eq
+          title: Op
+        value:
+          items:
+            anyOf:
+            - type: integer
+            - type: string
+          title: Value
+          type: array
+        ignore_case:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          default: null
+          title: Ignore Case
+      required:
+      - field
+      - value
+      title: FilterCppModel
+      type: object
+    FilterCppModelOpEnum:
+      enum:
+      - eq
+      - ne
+      - lt
+      - le
+      - gt
+      - ge
+      - =~
+      - '!~'
+      - =*
+      - '!*'
+      type: string
+    FilterOpEnum:
+      enum:
+      - eq
+      - ne
+      - lt
+      - le
+      - gt
+      - ge
+      - =~
+      - '!~'
+      - =*
+      - '!*'
+      - qp
+      type: string
+      description: |-
+        * `eq` - eq
+        * `ne` - ne
+        * `lt` - lt
+        * `le` - le
+        * `gt` - gt
+        * `ge` - ge
+        * `=~` - =~
+        * `!~` - !~
+        * `=*` - =*
+        * `!*` - !*
+        * `qp` - qp
+    GroupFilterCppModel:
+      properties:
+        op:
+          allOf:
+          - $ref: '#/components/schemas/GroupFilterCppModelOpEnum'
+          title: Op
+        value:
+          items:
+            discriminator:
+              mapping:
+                '!*': '#/components/schemas/FilterCppModel'
+                '!~': '#/components/schemas/FilterCppModel'
+                =*: '#/components/schemas/FilterCppModel'
+                =~: '#/components/schemas/FilterCppModel'
+                and: '#/components/schemas/GroupFilterCppModel'
+                eq: '#/components/schemas/FilterCppModel'
+                ge: '#/components/schemas/FilterCppModel'
+                gt: '#/components/schemas/FilterCppModel'
+                le: '#/components/schemas/FilterCppModel'
+                lt: '#/components/schemas/FilterCppModel'
+                ne: '#/components/schemas/FilterCppModel'
+                not: '#/components/schemas/GroupFilterCppModel'
+                or: '#/components/schemas/GroupFilterCppModel'
+              propertyName: op
+            oneOf:
+            - $ref: '#/components/schemas/FilterCppModel'
+            - $ref: '#/components/schemas/GroupFilterCppModel'
+          title: Value
+          type: array
+      required:
+      - op
+      - value
+      title: GroupFilterCppModel
+      type: object
+    GroupFilterCppModelOpEnum:
+      enum:
+      - and
+      - or
+      - not
+      type: string
+    InsertRule:
+      properties:
+        trigger_ids:
+          anyOf:
+          - items:
+              type: integer
+            type: array
+          - type: 'null'
+          default: null
+          title: Trigger Ids
+        flags:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          default: null
+          title: Flags
+      title: InsertRule
+      type: object
+    License:
+      type: object
+      properties:
+        is_registered:
+          type: boolean
+        is_internal:
+          type: boolean
+        is_demo:
+          type: boolean
+        is_valid:
+          type: boolean
+        errors:
+          type: array
+          items:
+            type: string
+          description: Erors
+        expire_timestamp:
+          type: integer
+        days_left:
+          type: integer
+        host_key:
+          type: string
+        customer_info:
+          type: string
+        actual_host_key:
+          type: string
+        overflows:
+          type: array
+          items:
+            type: integer
+          description: Overflows
+        max_events_per_day:
+          type: integer
+      required:
+      - actual_host_key
+      - customer_info
+      - days_left
+      - errors
+      - expire_timestamp
+      - host_key
+      - is_demo
+      - is_internal
+      - is_registered
+      - is_valid
+      - max_events_per_day
+      - overflows
+    PaginatedAuthTokenList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthToken'
+    PaginatedDashboardList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Dashboard'
+    PaginatedShortReportList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShortReport'
+    PaginatedTaskList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+    PaginatedTriggerList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Trigger'
+    PaginatedWidgetList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Widget'
+    PaginatedWidgetPresetList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/WidgetPreset'
+    PaginatedWidgetTypeInfoList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/WidgetTypeInfo'
+    ParserRulesPerfTestRequest:
+      type: object
+      properties:
+        detailed:
+          type: boolean
+          default: false
+          description: Dest each rule in a rule separately
+        rule_type:
+          allOf:
+          - $ref: '#/components/schemas/RuleTypeEnum'
+          default: all
+          description: |-
+            rules of given type
+
+            * `lua` - lua
+            * `parser` - parser
+            * `all` - all
+    PatchedAuthToken:
+      type: object
+      properties:
+        user:
+          allOf:
+          - $ref: '#/components/schemas/ShortUser'
+          readOnly: true
+          description: User
+        secret_key:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Date-time of creation
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Date-time of update
+    PatchedDashboard:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        owner:
+          allOf:
+          - $ref: '#/components/schemas/ShortUser'
+          readOnly: true
+        is_public:
+          type: boolean
+        read_only:
+          type: boolean
+          readOnly: true
+        config:
+          $ref: '#/components/schemas/DashboardConfig'
+        widgets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Widget'
+        description:
+          type: string
+          nullable: true
+        application_code:
+          type: string
+          readOnly: true
+          description: Application code
+    PatchedTask:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        due:
+          type: integer
+          description: Unix epoch timestamp
+        status:
+          type: string
+          description: one of "new", "pending", "closed"
+          maxLength: 8
+        is_overdue:
+          type: boolean
+          readOnly: true
+        is_closed:
+          type: boolean
+          readOnly: true
+        is_open:
+          type: boolean
+          readOnly: true
+        assigned_to:
+          type: integer
+        event_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        updated_at:
+          type: integer
+          readOnly: true
+          description: Unix epoch timestamp
+        created_at:
+          type: integer
+          readOnly: true
+          description: Unix epoch timestamp
+        owner:
+          allOf:
+          - $ref: '#/components/schemas/ShortUser'
+          readOnly: true
+    PatchedTrigger:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          nullable: true
+        snapshot_id:
+          type: integer
+          readOnly: true
+          description: id of particular revision of this trigger
+        name:
+          type: string
+          maxLength: 255
+        is_private:
+          type: boolean
+        is_active:
+          type: boolean
+          readOnly: true
+        filter:
+          type: array
+          items:
+            $ref: '#/components/schemas/Filter'
+        application_code:
+          type: string
+          readOnly: true
+          description: Application code
+        active_since:
+          type: integer
+          readOnly: true
+          description: Unix epoch timestamp
+        active_until:
+          type: integer
+          readOnly: true
+          description: Unix epoch timestamp
+        updated_at:
+          type: integer
+          readOnly: true
+          description: Unix epoch timestamp
+        created_at:
+          type: integer
+          readOnly: true
+          description: Unix epoch timestamp
+        owner:
+          allOf:
+          - $ref: '#/components/schemas/ShortUser'
+          readOnly: true
+        preset_name:
+          type: string
+          writeOnly: true
+          description: The title of one of the built-in triggers, if applicable (see
+            documentation at Detailed API Method Documentation)
+        snmp_trap:
+          type: boolean
+          description: Execute an SNMP trap event for this event
+        mark_known:
+          type: boolean
+          description: Mark the event as known (seen)
+        mark_actionable:
+          type: boolean
+          description: Mark the event as actionable
+        issue_notification:
+          type: boolean
+          description: Issue a LogZilla notification
+        send_email:
+          type: boolean
+          description: Send this event notification using email
+        send_email_template:
+          type: string
+          description: Text of the email body
+        send_email_period:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        send_webhook:
+          type: boolean
+          description: Execute a webhook for this event
+        send_webhook_method:
+          allOf:
+          - $ref: '#/components/schemas/SendWebhookMethodEnum'
+          description: |-
+            HTTP method to use
+
+            * `GET` - GET
+            * `POST` - POST
+        send_webhook_url:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 500
+        send_webhook_ssl_verify:
+          type: boolean
+          description: Use SSL for the webhook request?
+        send_webhook_template:
+          type: string
+          nullable: true
+          description: Template for the webhook body
+        send_webhook_qs_template:
+          type: string
+          nullable: true
+          description: Template for the webhook query string
+        send_webhook_period:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        exec_script:
+          type: boolean
+          description: Execute a unix script for this event
+        script_docker_image:
+          type: string
+          description: Name of the docker image for executing the script
+        script_path:
+          type: string
+          description: Unix path to script
+        exec_script_period:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        add_note:
+          type: boolean
+          description: Add the given note text
+        note_text:
+          type: string
+        stop_flag:
+          type: boolean
+        hits_count:
+          type: integer
+          readOnly: true
+        total_hits_count:
+          type: integer
+          readOnly: true
+        last_hit:
+          type: integer
+          readOnly: true
+          description: Unix epoch timestamp
+        notifications_count:
+          type: integer
+          readOnly: true
+          description: total number of notifications from this trigger
+        notifications_read_count:
+          type: integer
+          readOnly: true
+          description: number of read notifications from this trigger
+        notifications_unread_count:
+          type: integer
+          readOnly: true
+          description: number of unread notifications from this trigger
+        notifications_last_issued:
+          type: integer
+          readOnly: true
+          description: ' timestamp (unix epoch) of most recent notification'
+        order:
+          type: integer
+          readOnly: true
+          nullable: true
+        position_before:
+          type: integer
+          writeOnly: true
+          description: Force trigger position before reference_trigger_id
+        position_after:
+          type: integer
+          writeOnly: true
+          description: Force trigger position after reference_trigger_id
+        rewrite_rule:
+          allOf:
+          - $ref: '#/components/schemas/RewriteRuleModel'
+          readOnly: true
+    PatchedWidget:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        is_public:
+          type: boolean
+        read_only:
+          type: boolean
+          readOnly: true
+        owner:
+          allOf:
+          - $ref: '#/components/schemas/ShortUser'
+          readOnly: true
+        type:
+          type: string
+        config:
+          type: object
+          additionalProperties: {}
+        has_query_permission:
+          type: boolean
+          readOnly: true
+        preset_name:
+          type: string
+          writeOnly: true
+          description: The title of one of the built-in widgets, if applicable (see
+            documentation at Detailed API Method Documentation)
+    Query:
+      type: object
+      properties:
+        type:
+          type: string
+        params:
+          $ref: '#/components/schemas/QueryParams'
+      required:
+      - type
+    QueryParams:
+      type: object
+      properties:
+        show_other:
+          type: boolean
+          description: For TopN, show other values, summed into one
+        with_subperiods:
+          type: boolean
+          description: Show results subdivided into smaller periods (TopN queries
+            only)
+        limit:
+          type: integer
+          description: The number of results to return (search queries only)
+        page:
+          type: integer
+          description: The number of the results page to return (search queries only)
+        filter:
+          type: array
+          items:
+            $ref: '#/components/schemas/Filter'
+        time_range:
+          $ref: '#/components/schemas/TimeRange'
+        field:
+          type: string
+        sort:
+          type: object
+          additionalProperties: {}
+          description: See detailed API method documentation
+        page_size:
+          type: integer
+        ignore_empty:
+          type: boolean
+          description: Ignore empty field tag/values
+        with_archive:
+          type: boolean
+          default: false
+          description: Include archives in query
+        subfields:
+          type: array
+          items:
+            type: string
+          description: Divide each result into subsections by these fields
+        subfields_limit:
+          type: integer
+          description: Max number of entries in subfields divisions
+        top_periods:
+          type: boolean
+          description: Adds an extra top_periods section in results for top subperiods
+            (sorted by total)
+        force_fullscan:
+          type: boolean
+        with_events:
+          type: boolean
+        is_open:
+          type: boolean
+          description: Filter list by "is open"? (only valid for task queries)
+        is_overdue:
+          type: boolean
+          description: Filter list by "is overdue"? (only valid for task queries)
+        is_private:
+          type: boolean
+          description: Is the task private? (only valid for task queries)
+        read:
+          type: boolean
+          description: Filter list by "has been read"?
+        assigned_to:
+          type: array
+          items:
+            type: integer
+          description: User ids for assigned users (only valid for task queries)
+        owner:
+          type: array
+          items:
+            type: integer
+          description: User ids for owners (only valid for task queries)
+        target:
+          type: string
+          description: Target of the task (only valid for task queries)
+        time_range_field:
+          allOf:
+          - $ref: '#/components/schemas/TimeRangeFieldEnum'
+          description: |-
+            Qualifier for time range
+
+            * `created_at` - created_at
+            * `updated_at` - updated_at
+            * `read_at` - read_at
+            * `unread_since` - unread_since
+        timezone:
+          type: string
+          description: Time Zone
+        check_upgrade_available:
+          type: boolean
+          default: true
+          description: Check LZ new version available (only valid for notifications
+            queries)
+    QueryType:
+      type: object
+      properties:
+        type:
+          type: string
+        default_params:
+          type: object
+          additionalProperties: {}
+        exportable_formats:
+          type: array
+          items:
+            type: string
+          description: List of exportable formats
+      required:
+      - default_params
+      - exportable_formats
+      - type
+    QueryTypeList:
+      type: object
+      properties:
+        query_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueryType'
+      required:
+      - query_types
+    ReplaceRuleModel:
+      properties:
+        field:
+          minLength: 1
+          title: Field
+          type: string
+        expr:
+          minLength: 1
+          title: Expr
+          type: string
+        fmt:
+          minLength: 1
+          title: Fmt
+          type: string
+        ignore_case:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          default: null
+          title: Ignore Case
+        first_only:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          default: null
+          title: First Only
+      required:
+      - field
+      - expr
+      - fmt
+      title: ReplaceRuleModel
+      type: object
+    RewriteKVModel:
+      properties:
+        delimiter:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          title: Delimiter
+        pair_separator:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          title: Pair Separator
+        separator:
+          anyOf:
+          - minLength: 1
+            type: string
+          - type: 'null'
+          default: null
+          title: Separator
+      title: RewriteKVModel
+      type: object
+    RewriteRuleModel:
+      properties:
+        id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          default: null
+          title: Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          title: Name
+        rewrite:
+          anyOf:
+          - type: object
+          - type: 'null'
+          default: null
+          title: Rewrite
+        insert:
+          anyOf:
+          - $ref: '#/components/schemas/InsertRule'
+          - type: 'null'
+          default: null
+        replace:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/ReplaceRuleModel'
+            type: array
+          - type: 'null'
+          default: null
+          title: Replace
+        tag:
+          anyOf:
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
+          default: null
+          title: Tag
+        comment:
+          anyOf:
+          - type: object
+          - type: string
+          - items: {}
+            type: array
+          default: null
+          title: Comment
+        kv:
+          anyOf:
+          - $ref: '#/components/schemas/RewriteKVModel'
+          - type: 'null'
+          default: null
+        drop:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          default: null
+          title: Drop
+        match:
+          anyOf:
+          - items:
+              discriminator:
+                mapping:
+                  '!*': '#/components/schemas/FilterCppModel'
+                  '!~': '#/components/schemas/FilterCppModel'
+                  =*: '#/components/schemas/FilterCppModel'
+                  =~: '#/components/schemas/FilterCppModel'
+                  and: '#/components/schemas/GroupFilterCppModel'
+                  eq: '#/components/schemas/FilterCppModel'
+                  ge: '#/components/schemas/FilterCppModel'
+                  gt: '#/components/schemas/FilterCppModel'
+                  le: '#/components/schemas/FilterCppModel'
+                  lt: '#/components/schemas/FilterCppModel'
+                  ne: '#/components/schemas/FilterCppModel'
+                  not: '#/components/schemas/GroupFilterCppModel'
+                  or: '#/components/schemas/GroupFilterCppModel'
+                propertyName: op
+              oneOf:
+              - $ref: '#/components/schemas/FilterCppModel'
+              - $ref: '#/components/schemas/GroupFilterCppModel'
+            type: array
+          - type: 'null'
+          default: null
+          title: Match
+        stop_flag:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          default: null
+          title: Stop Flag
+      title: RewriteRuleModel
+      type: object
+    RuleTypeEnum:
+      enum:
+      - lua
+      - parser
+      - all
+      type: string
+      description: |-
+        * `lua` - lua
+        * `parser` - parser
+        * `all` - all
+    SendWebhookMethodEnum:
+      enum:
+      - GET
+      - POST
+      type: string
+      description: |-
+        * `GET` - GET
+        * `POST` - POST
+    ShortReport:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        file_type:
+          $ref: '#/components/schemas/FileTypeEnum'
+        file_name:
+          type: string
+          maxLength: 255
+        source:
+          $ref: '#/components/schemas/SourceEnum'
+        owner:
+          allOf:
+          - $ref: '#/components/schemas/ShortUser'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Date-time of creation
+      required:
+      - created_at
+      - file_name
+      - id
+      - owner
+    ShortUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        fullname:
+          type: string
+          maxLength: 128
+      required:
+      - id
+      - username
+    SourceEnum:
+      enum:
+      - UNKNOWN
+      - QUERY
+      - REPORT
+      type: string
+      description: |-
+        * `UNKNOWN` - UNKNOWN
+        * `QUERY` - QUERY
+        * `REPORT` - REPORT
+    SourceTypeEnum:
+      enum:
+      - local
+      - ldap
+      type: string
+      description: |-
+        * `local` - local
+        * `ldap` - ldap
+    StatusEnum:
+      enum:
+      - STARTED
+      - RECEIVED
+      - REVOKED
+      - RETRY
+      - PENDING
+      - FAILURE
+      - SUCCESS
+      - IN_PROGRESS
+      type: string
+      description: |-
+        * `STARTED` - STARTED
+        * `RECEIVED` - RECEIVED
+        * `REVOKED` - REVOKED
+        * `RETRY` - RETRY
+        * `PENDING` - PENDING
+        * `FAILURE` - FAILURE
+        * `SUCCESS` - SUCCESS
+        * `IN_PROGRESS` - IN_PROGRESS
+    StoragePerfTestRequest:
+      type: object
+      properties:
+        sync_mode:
+          type: boolean
+          default: true
+          description: Use sync mode
+        remote:
+          type: boolean
+          default: false
+          description: Test remote
+        test_suite:
+          allOf:
+          - $ref: '#/components/schemas/TestSuiteEnum'
+          default: basic
+          description: |-
+            Test suitne name
+
+            * `basic` - basic
+            * `thin_long` - thin_long
+            * `max_eps_estimator` - max_eps_estimator
+            * `all` - all
+    StyleClassEnum:
+      enum:
+      - default
+      - infographic
+      - moonlight
+      - vintage
+      - roma
+      - macarons
+      - shine
+      type: string
+      description: |-
+        * `default` - default
+        * `infographic` - infographic
+        * `moonlight` - moonlight
+        * `vintage` - vintage
+        * `roma` - roma
+        * `macarons` - macarons
+        * `shine` - shine
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        due:
+          type: integer
+          description: Unix epoch timestamp
+        status:
+          type: string
+          description: one of "new", "pending", "closed"
+          maxLength: 8
+        is_overdue:
+          type: boolean
+          readOnly: true
+        is_closed:
+          type: boolean
+          readOnly: true
+        is_open:
+          type: boolean
+          readOnly: true
+        assigned_to:
+          type: integer
+        event_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+        updated_at:
+          type: integer
+          readOnly: true
+          description: Unix epoch timestamp
+        created_at:
+          type: integer
+          readOnly: true
+          description: Unix epoch timestamp
+        owner:
+          allOf:
+          - $ref: '#/components/schemas/ShortUser'
+          readOnly: true
+      required:
+      - created_at
+      - description
+      - due
+      - id
+      - is_closed
+      - is_open
+      - is_overdue
+      - owner
+      - title
+      - updated_at
+    TestSuiteEnum:
+      enum:
+      - basic
+      - thin_long
+      - max_eps_estimator
+      - all
+      type: string
+      description: |-
+        * `basic` - basic
+        * `thin_long` - thin_long
+        * `max_eps_estimator` - max_eps_estimator
+        * `all` - all
+    TimeRange:
+      type: object
+      properties:
+        ts_from:
+          type: integer
+          description: First timestamp of range (unix epoch timestamp)
+        ts_to:
+          type: integer
+          description: First timestamp greater than range (unix epoch timestamp)
+        preset:
+          type: string
+          description: If given, name of time range preset (today, yesterday, last_N_minutes/hours/days
+        step:
+          type: integer
+          description: Result time slot size in seconds (e.g. bar size/period on chart),
+            default automatically calculated if not given
+        round_to_step:
+          type: boolean
+          description: (deprecated)
+        base_time:
+          type: integer
+          description: Base time for relative time-ranges
+        periods:
+          type: object
+          additionalProperties: {}
+          description: (deprecated)
+    TimeRangeFieldEnum:
+      enum:
+      - created_at
+      - updated_at
+      - read_at
+      - unread_since
+      type: string
+      description: |-
+        * `created_at` - created_at
+        * `updated_at` - updated_at
+        * `read_at` - read_at
+        * `unread_since` - unread_since
+    Trigger:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          nullable: true
+        snapshot_id:
+          type: integer
+          readOnly: true
+          description: id of particular revision of this trigger
+        name:
+          type: string
+          maxLength: 255
+        is_private:
+          type: boolean
+        is_active:
+          type: boolean
+          readOnly: true
+        filter:
+          type: array
+          items:
+            $ref: '#/components/schemas/Filter'
+        application_code:
+          type: string
+          readOnly: true
+          description: Application code
+        active_since:
+          type: integer
+          readOnly: true
+          description: Unix epoch timestamp
+        active_until:
+          type: integer
+          readOnly: true
+          description: Unix epoch timestamp
+        updated_at:
+          type: integer
+          readOnly: true
+          description: Unix epoch timestamp
+        created_at:
+          type: integer
+          readOnly: true
+          description: Unix epoch timestamp
+        owner:
+          allOf:
+          - $ref: '#/components/schemas/ShortUser'
+          readOnly: true
+        preset_name:
+          type: string
+          writeOnly: true
+          description: The title of one of the built-in triggers, if applicable (see
+            documentation at Detailed API Method Documentation)
+        snmp_trap:
+          type: boolean
+          description: Execute an SNMP trap event for this event
+        mark_known:
+          type: boolean
+          description: Mark the event as known (seen)
+        mark_actionable:
+          type: boolean
+          description: Mark the event as actionable
+        issue_notification:
+          type: boolean
+          description: Issue a LogZilla notification
+        send_email:
+          type: boolean
+          description: Send this event notification using email
+        send_email_template:
+          type: string
+          description: Text of the email body
+        send_email_period:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        send_webhook:
+          type: boolean
+          description: Execute a webhook for this event
+        send_webhook_method:
+          allOf:
+          - $ref: '#/components/schemas/SendWebhookMethodEnum'
+          description: |-
+            HTTP method to use
+
+            * `GET` - GET
+            * `POST` - POST
+        send_webhook_url:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 500
+        send_webhook_ssl_verify:
+          type: boolean
+          description: Use SSL for the webhook request?
+        send_webhook_template:
+          type: string
+          nullable: true
+          description: Template for the webhook body
+        send_webhook_qs_template:
+          type: string
+          nullable: true
+          description: Template for the webhook query string
+        send_webhook_period:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        exec_script:
+          type: boolean
+          description: Execute a unix script for this event
+        script_docker_image:
+          type: string
+          description: Name of the docker image for executing the script
+        script_path:
+          type: string
+          description: Unix path to script
+        exec_script_period:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        add_note:
+          type: boolean
+          description: Add the given note text
+        note_text:
+          type: string
+        stop_flag:
+          type: boolean
+        hits_count:
+          type: integer
+          readOnly: true
+        total_hits_count:
+          type: integer
+          readOnly: true
+        last_hit:
+          type: integer
+          readOnly: true
+          description: Unix epoch timestamp
+        notifications_count:
+          type: integer
+          readOnly: true
+          description: total number of notifications from this trigger
+        notifications_read_count:
+          type: integer
+          readOnly: true
+          description: number of read notifications from this trigger
+        notifications_unread_count:
+          type: integer
+          readOnly: true
+          description: number of unread notifications from this trigger
+        notifications_last_issued:
+          type: integer
+          readOnly: true
+          description: ' timestamp (unix epoch) of most recent notification'
+        order:
+          type: integer
+          readOnly: true
+          nullable: true
+        position_before:
+          type: integer
+          writeOnly: true
+          description: Force trigger position before reference_trigger_id
+        position_after:
+          type: integer
+          writeOnly: true
+          description: Force trigger position after reference_trigger_id
+        rewrite_rule:
+          allOf:
+          - $ref: '#/components/schemas/RewriteRuleModel'
+          readOnly: true
+      required:
+      - active_since
+      - active_until
+      - application_code
+      - created_at
+      - filter
+      - hits_count
+      - id
+      - is_active
+      - last_hit
+      - name
+      - notifications_count
+      - notifications_last_issued
+      - notifications_read_count
+      - notifications_unread_count
+      - order
+      - owner
+      - rewrite_rule
+      - snapshot_id
+      - total_hits_count
+      - updated_at
+    TypeEnum:
+      enum:
+      - dynamic
+      - static
+      type: string
+      description: |-
+        * `dynamic` - dynamic
+        * `static` - static
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        fullname:
+          type: string
+          maxLength: 128
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        is_admin:
+          type: boolean
+          readOnly: true
+          description: Is admin
+        is_superuser:
+          type: boolean
+          title: Superuser status
+          description: Designates that this user has all permissions without explicitly
+            assigning them.
+        is_active:
+          type: boolean
+          title: Active
+          description: True if the user currently usable
+        is_deactivated:
+          type: boolean
+          readOnly: true
+          description: True if the user has user been disabled
+        groups:
+          type: array
+          items:
+            type: integer
+          description: The groups this user belongs to. A user will get all permissions
+            granted to each of their groups.
+        date_joined:
+          type: integer
+          readOnly: true
+          description: Unix epoch timestamp
+        password:
+          type: string
+          writeOnly: true
+        source_type:
+          allOf:
+          - $ref: '#/components/schemas/SourceTypeEnum'
+          readOnly: true
+      required:
+      - date_joined
+      - email
+      - id
+      - is_admin
+      - is_deactivated
+      - source_type
+      - username
+    Widget:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        is_public:
+          type: boolean
+        read_only:
+          type: boolean
+          readOnly: true
+        owner:
+          allOf:
+          - $ref: '#/components/schemas/ShortUser'
+          readOnly: true
+        type:
+          type: string
+        config:
+          type: object
+          additionalProperties: {}
+        has_query_permission:
+          type: boolean
+          readOnly: true
+        preset_name:
+          type: string
+          writeOnly: true
+          description: The title of one of the built-in widgets, if applicable (see
+            documentation at Detailed API Method Documentation)
+      required:
+      - config
+      - has_query_permission
+      - id
+      - owner
+      - read_only
+      - type
+    WidgetPreset:
+      type: object
+      properties:
+        preset_name:
+          type: string
+          readOnly: true
+        description:
+          type: string
+          readOnly: true
+        permissions:
+          type: array
+          items:
+            type: string
+          description: List of permission codenames
+        app_code:
+          type: string
+          readOnly: true
+        app_name:
+          type: string
+          readOnly: true
+        internal:
+          type: boolean
+          readOnly: true
+        config:
+          type: object
+          additionalProperties: {}
+        type:
+          type: string
+      required:
+      - app_code
+      - app_name
+      - config
+      - description
+      - internal
+      - preset_name
+      - type
+    WidgetTypeInfo:
+      type: object
+      properties:
+        name:
+          type: string
+          readOnly: true
+        config_params:
+          type: string
+          readOnly: true
+        config_defaults:
+          type: string
+          readOnly: true
+      required:
+      - config_defaults
+      - config_params
+      - name
+  securitySchemes:
+    LZAutoLoginAuthentication: {}
+    LZInternalAuthentication:
+      type: apiKey
+      in: header
+      name: HTTP_INTERNAL_REQUEST_USERNAME
+    TokenAuthentication:
+      type: apiKey
+      in: header
+      name: AUTHTOKEN
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
